@@ -1,6 +1,63 @@
+//         _                 ___   __
+//        (_)________  ____ |__ \ / /_  __ _____
+//       / / ___/ __ \/ __ \__/ // / / / / __  /
+//      / (__  / /_/ / / / / __// / /_/ / /_/ /
+//   __/ /____/\____/_/ /_/____/_/\____/\____/
+//  /___/
+//
+//! # json2lua
+//!
+//! Convert JSON to Lua table
+//!
+//! ## Example:
+//! ```rust
+//! use json2lua::parse;
+//!
+//! let json = r#"{
+//!   "string": "json2lua",
+//!   "int": 420,
+//!   "bool": true,
+//!   "null": null
+//! }"#;
+//!
+//! let lua = parse(json).unwrap();
+//! // Output:
+//! // {
+//! //   ["string"] = "json2lua",
+//! //   ["int"] = 420,
+//! //   ["bool"] = true,
+//! //   ["null"] = nil,
+//! // }
+//! ```
+//!
+//! Made with <3 by Dervex
+
+#![allow(clippy::tabs_in_doc_comments)]
+
 use indexmap::IndexMap;
 use serde_json::{from_str, Result, Value};
 
+/// Parse JSON string to Lua table
+///
+/// ```rust
+/// use json2lua::parse;
+///
+/// let json = r#"{
+/// 	"string": "abc",
+/// 	"int": 123,
+/// 	"bool": true,
+/// 	"null": null
+/// }"#;
+///
+/// let lua = r#"{
+/// 	["string"] = "abc",
+/// 	["int"] = 123,
+/// 	["bool"] = true,
+/// 	["null"] = nil,
+/// }"#;
+///
+/// assert_eq!(parse(json).unwrap(), lua);
+/// ```
 pub fn parse(json: &str) -> Result<String> {
 	let json: IndexMap<String, Value> = from_str(json)?;
 	let mut lua = String::from("{\n");
@@ -85,7 +142,7 @@ fn validate_string(string: &str) -> String {
 #[cfg(test)]
 mod test {
 	#[test]
-	fn equal() {
+	fn all_values() {
 		use crate::parse;
 
 		let json = r#"{

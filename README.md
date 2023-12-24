@@ -1,6 +1,6 @@
 # json2lua
 
-In development
+Convert JSON to Lua table
 
 <div>
   <a href="https://crates.io/crates/json2lua"><img alt='Version badge' src='https://img.shields.io/crates/v/json2lua.svg'></a>
@@ -11,5 +11,21 @@ In development
 ## Example:
 
 ```rust
-// TODO
+use json2lua::parse;
+
+let json = r#"{
+  "string": "abc",
+  "int": 123,
+  "bool": true,
+  "null": null
+}"#;
+
+let lua = parse(json).unwrap();
+// Output:
+// {
+//   ["string"] = "abc",
+//   ["int"] = 123,
+//   ["bool"] = true,
+//   ["null"] = nil,
+// }
 ```
