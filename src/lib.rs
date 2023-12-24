@@ -37,7 +37,7 @@
 use indexmap::IndexMap;
 use serde_json::{from_str, Result, Value};
 
-/// Parse JSON string to Lua table
+/// Parse JSON string into a Lua table
 ///
 /// ```rust
 /// use json2lua::parse;
@@ -86,14 +86,14 @@ fn walk(key: Option<&str>, value: &Value, depth: usize) -> String {
 		Value::Bool(b) => lua.push_str(&b.to_string()),
 		Value::Null => lua.push_str("nil"),
 		Value::Array(a) => {
-			lua.push_str("[\n");
+			lua.push_str("{\n");
 
 			for v in a {
 				lua.push_str(&walk(None, v, depth + 1));
 			}
 
 			lua.push_str(&get_indent(depth));
-			lua.push(']');
+			lua.push('}');
 		}
 		Value::Object(o) => {
 			lua.push_str("{\n");
