@@ -1,0 +1,18 @@
+[package]
+name = "json2lua"
+version = "0.0.0"
+edition = "2021"
+authors = ["Dervex"]
+repository = "https://github.com/DervexHero/json2lua"
+description = "Convert JSON to Lua table"
+keywords = ["json", "lua", "parse", "table", "array"]
+categories = ["parsing"]
+license = "Apache-2.0"
+
+[lib]
+name = "json2lua"
+path = "src/lib.rs"
+
+[dependencies]
+indexmap = { version = "2.1.0", features = ["serde"] }
+serde_json = { version = "1.0.108", features = ["preserve_order"] }
