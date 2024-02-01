@@ -170,14 +170,14 @@ mod test {
 	["float"] = 4.2,
 	["bool"] = true,
 	["null"] = nil,
-	["array"] = [
+	["array"] = {
 		"string",
 		12345,
 		false,
 		{
 			["k"] = "v",
 		},
-	],
+	},
 	["object"] = {
 		["key"] = "value",
 	},
