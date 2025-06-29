@@ -35,7 +35,15 @@
 #![allow(clippy::tabs_in_doc_comments)]
 
 use indexmap::IndexMap;
+use serde::Deserialize;
 use serde_json::{from_str, Result, Value};
+
+#[derive(Deserialize)]
+#[serde(untagged)]
+enum Json {
+	Sequence(Vec<Value>),
+	Map(IndexMap<String, Value>),
+}
 
 /// Parse JSON string into a Lua table
 ///
@@ -59,11 +67,19 @@ use serde_json::{from_str, Result, Value};
 /// assert_eq!(parse(json).unwrap(), lua);
 /// ```
 pub fn parse(json: &str) -> Result<String> {
-	let json: IndexMap<String, Value> = from_str(json)?;
 	let mut lua = String::from("{\n");
 
-	for (key, value) in json {
-		lua.push_str(&walk(Some(&validate_string(&key)), &value, 1));
+	match from_str(json)? {
+		Json::Sequence(json) => {
+			for value in json {
+				lua.push_str(&walk(None, &value, 1));
+			}
+		}
+		Json::Map(json) => {
+			for (key, value) in json {
+				lua.push_str(&walk(Some(&validate_string(&key)), &value, 1));
+			}
+		}
 	}
 
 	lua.push('}');
@@ -204,6 +220,21 @@ mod test {
 	["3"] = "..\r..",
 	["4"] = "..\\..",
 	["5"] = "..\"..",
+}"#;
+
+		assert_eq!(parse(json).unwrap(), lua);
+	}
+
+	#[test]
+	fn root_array() {
+		use crate::parse;
+
+		let json = r#"["a", "b", "c"]"#;
+
+		let lua = r#"{
+	"a",
+	"b",
+	"c",
 }"#;
 
 		assert_eq!(parse(json).unwrap(), lua);
